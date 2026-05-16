@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITTA UT - Stok Bahan Ajar</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <a href="index.html" class="btn-back">← Kembali ke Dashboard</a>
+        
+        <h2>{{ namaHalaman }}</h2>
+        <p>Sistem Pemesanan dan Distribusi Bahan Ajar Universitas Terbuka</p>
+
+        <div class="filter-section" style="background: #eff6ff; border-left: 4px solid #003366; flex-direction: column; gap: 15px;">
+            <strong style="color: #003366; font-size: 16px;">➕ Tambah Bahan Ajar Baru ke Gudang</strong>
+            <form @submit.prevent="tambahStokBaru" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 100%;">
+                <div class="filter-group">
+                    <label>Kode Modul:</label>
+                    <input type="text" v-model="formBaru.kode" placeholder="Contoh: MKDU4110" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>Judul Bahan Ajar:</label>
+                    <input type="text" v-model="formBaru.judul" placeholder="Contoh: Bahasa Indonesia" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>Kategori:</label>
+                    <select v-model="formBaru.kategori" required>
+                        <option value="" disabled>Pilih Kategori</option>
+                        <option v-for="kat in kategoriList" :value="kat">{{ kat }}</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>UPBJJ Target:</label>
+                    <select v-model="formBaru.upbjj" required>
+                        <option value="" disabled>Pilih UPBJJ</option>
+                        <option v-for="upbjj in upbjjList" :value="upbjj">{{ upbjj }}</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Lokasi Rak:</label>
+                    <input type="text" v-model="formBaru.lokasiRak" placeholder="Contoh: R4-D2" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>Harga Satuan (Rp):</label>
+                    <input type="number" v-model.number="formBaru.harga" placeholder="Harga" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>Jumlah Masuk (Qty):</label>
+                    <input type="number" v-model.number="formBaru.qty" placeholder="Jumlah" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group" style="justify-content: flex-end;">
+                    <button type="submit" class="btn-dashboard btn-blue" style="padding: 10px; font-size: 13px; width: 100%;">Simpan ke Sistem</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Filter UPBJJ:</label>
+                <select v-model="selectedUpbjj">
+                    <option value="">Semua UPBJJ</option>
+                    <option v-for="upbjj in upbjjList" :value="upbjj">{{ upbjj }}</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Filter Kategori:</label>
+                <select v-model="selectedKategori">
+                    <option value="">Semua Kategori</option>
+                    <option v-for="kat in kategoriList" :value="kat">{{ kat }}</option>
+                </select>
+            </div>
+        </div>
+
+        <p class="summary-text">Menampilkan <strong>{{ filteredStok.length }}</strong> jenis bahan ajar.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Kode</th>
+                    <th>Judul Bahan Ajar</th>
+                    <th>Kategori / UPBJJ</th>
+                    <th>Lokasi Rak</th>
+                    <th>Harga</th>
+                    <th>Jumlah (Qty)</th>
+                    <th>Status Stok</th>
+                    <th>Catatan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in filteredStok" :key="item.kode">
+                    <td>{{ item.kode }}</td>
+                    <td><strong>{{ item.judul }}</strong></td>
+                    <td>
+                        <span class="tag-kat">{{ item.kategori }}</span><br>
+                        <small class="text-muted">UPBJJ: {{ item.upbjj }}</small>
+                    </td>
+                    <td><code>{{ item.lokasiRak }}</code></td>
+                    <td>Rp {{ item.harga.toLocaleString('id-ID') }}</td>
+                    <td>{{ item.qty }} pcs</td>
+                    <td>
+                        <span v-if="item.qty === 0" class="badge danger">Habis Total</span>
+                        <span v-else-if="item.qty <= item.safety" class="badge warning">Kritis</span>
+                        <span v-else class="badge success">Tersedia</span>
+                    </td>
+                    <td>
+                        <span v-html="item.catatanHTML"></span>
+                    </td>
+                    <td>
+                        <button @click="restockBuku(item.kode)" class="btn-sm">Restok (+10)</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div v-show="showAlert" class="alert-info">
+            {{ alertMessage }}
+        </div>
+    </div>
+
+    <script src="js/stok-app.js"></script>
+</body>
+</html>

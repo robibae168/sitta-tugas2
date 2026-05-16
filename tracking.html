@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITTA UT - Tracking DO</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <a href="index.html" class="btn-back">← Kembali ke Dashboard</a>
+        <h2>{{ judulHalaman }}</h2>
+        <p>Lacak pengiriman Buku Materi Pokok (BMP) Mahasiswa Universitas Terbuka</p>
+
+        <div class="filter-section" style="background: #eff6ff; border-left: 4px solid #ffcc00; flex-direction: column; gap: 15px; margin-top: 20px;">
+            <strong style="color: #003366; font-size: 16px;">➕ Daftarkan Dokumen Order (DO) Baru</strong>
+            <form @submit.prevent="tambahDoBaru" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 100%;">
+                <div class="filter-group">
+                    <label>Nomor DO:</label>
+                    <input type="text" v-model="formDO.noDO" placeholder="Contoh: DO2025-0002" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>NIM Mahasiswa:</label>
+                    <input type="text" v-model="formDO.nim" placeholder="Contoh: 041234567" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>Nama Penerima:</label>
+                    <input type="text" v-model="formDO.nama" placeholder="Contoh: Budi Santoso" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>Ekspedisi:</label>
+                    <input type="text" v-model="formDO.ekspedisi" placeholder="Contoh: POS Indonesia / J&T" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>Paket Komoditas:</label>
+                    <input type="text" v-model="formDO.paket" placeholder="Contoh: PAKET-UT-002" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group">
+                    <label>Total Nilai Logistik (Rp):</label>
+                    <input type="number" v-model.number="formDO.total" placeholder="Contoh: 140000" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="filter-group" style="justify-content: flex-end; grid-column: span 1;">
+                    <button type="submit" class="btn-dashboard btn-yellow" style="padding: 10px; font-size: 13px; width: 100%; border: none; cursor: pointer;">Daftarkan DO</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="search-box-container" style="margin: 20px 0; padding: 15px; background: #f8fafc; border-radius: 8px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Masukkan Nomor Delivery Order (DO) Untuk Melacak:</label>
+            <div class="search-input-group">
+                <input type="text" v-model="inputNoDO" placeholder="Contoh: DO2025-0001" style="padding: 10px; width: 100%; max-width: 300px; border: 1px solid #cbd5e1; border-radius: 6px;">
+            </div>
+            <small style="color: #64748b; display: block; margin-top: 5px;">TIP: GUNAKAN NOMOR DO YANG SUDAH TERDAFTAR DI ATAS UNTUK MENGUJI.</small>
+        </div>
+
+        <h3>Detail Status Distribusi</h3>
+        
+        <div v-if="detailDO" class="tracking-card">
+            <div class="tracking-header">
+                <h4>No. DO: {{ inputNoDO.toUpperCase() }}</h4>
+                <span class="badge info">{{ detailDO.status }}</span>
+            </div>
+            <hr style="margin: 10px 0; border: 0; border-top: 1px solid #e2e8f0;">
+            <div class="tracking-info-grid">
+                <p><strong>NIM / Nama Penerima:</strong> {{ detailDO.nim }} - {{ detailDO.nama }}</p>
+                <p><strong>Ekspedisi Pengiriman:</strong> {{ detailDO.ekspedisi }} (Kirim: {{ detailDO.tanggalKirim }})</p>
+                <p><strong>Paket Komoditas:</strong> {{ detailDO.paket }}</p>
+                <p><strong>Total Nilai Logistik:</strong> Rp {{ detailDO.total.toLocaleString('id-ID') }}</p>
+            </div>
+
+            <h4 style="margin-top: 20px;">Riwayat Perjalanan Paket (Timeline)</h4>
+            <ul class="timeline">
+                <li v-for="log in detailDO.perjalanan" :key="log.waktu">
+                    <span class="time">[{{ log.waktu }}]</span> - <span class="desc">{{ log.keterangan }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <div v-else class="alert-danger">
+            <span v-if="!inputNoDO">Silakan ketik nomor DO terlebih dahulu pada kolom pencarian di atas.</span>
+            <span v-else>Nomor DO "<strong>{{ inputNoDO }}</strong>" tidak terdaftar dalam sistem SITTA UT.</span>
+        </div>
+
+        <div v-show="showAlert" class="alert-info" style="border-left-color: #ffcc00;">
+            {{ alertMessage }}
+        </div>
+    </div>
+
+    <script src="js/tracking-app.js"></script>
+</body>
+</html>

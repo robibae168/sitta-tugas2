@@ -1,0 +1,278 @@
+
+/* --- RESET & GLOBAL STYLE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+.bg-dashboard {
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* --- CONTAINER MAIN --- */
+.dashboard-container {
+    width: 100%;
+    max-width: 1000px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 51, 102, 0.08);
+    overflow: hidden;
+    padding: 40px;
+}
+
+/* --- HEADER --- */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f0f4f8;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-placeholder {
+    background: #003366;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 24px;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    border: 2px solid #ffcc00;
+}
+
+.logo-area h1 {
+    font-size: 26px;
+    color: #003366;
+    font-weight: 700;
+}
+
+.logo-area p {
+    font-size: 13px;
+    color: #627d98;
+}
+
+.status-badge-top {
+    font-size: 13px;
+    background: #e1f5fe;
+    color: #0288d1;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dot-online {
+    width: 8px;
+    height: 8px;
+    background: #24b47e;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* --- BANNER --- */
+.welcome-banner {
+    background: linear-gradient(135deg, #003366 0%, #004080 100%);
+    color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.welcome-banner h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.welcome-banner p {
+    font-size: 14px;
+    color: #bac7d5;
+    max-width: 80%; /* DI PERBAIKAN: Menggunakan semicolon (;) */
+}
+
+/* --- GRID CARDS --- */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.menu-card {
+    background: #ffffff;
+    border: 1px solid #e4e7eb;
+    border-radius: 12px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.05);
+}
+
+.border-blue:hover { border-color: #003366; }
+.border-yellow:hover { border-color: #ffcc00; }
+
+.card-icon {
+    font-size: 35px;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+}
+
+.icon-stok { background-color: #e6fffa; }
+.icon-tracking { background-color: #fff9db; }
+
+.card-body h3 {
+    font-size: 18px;
+    color: #102a43;
+    margin-bottom: 10px;
+}
+
+.card-body p {
+    font-size: 14px;
+    color: #486581;
+    margin-bottom: 25px;
+    min-height: 70px;
+}
+
+/* --- BUTTONS --- */
+.btn-dashboard {
+    display: block;
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.btn-blue { background: #003366; color: #ffffff; }
+.btn-blue:hover { background: #002244; }
+
+.btn-yellow { background: #ffcc00; color: #003366; }
+.btn-yellow:hover { background: #e6b800; }
+
+/* --- FOOTER --- */
+.dashboard-footer {
+    text-align: center;
+    border-top: 2px solid #f0f4f8;
+    padding-top: 25px;
+    font-size: 13px;
+    color: #627d98;
+}
+
+.text-muted {
+    font-size: 11px;
+    margin-top: 5px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* --- STYLE HALAMAN STOK & TRACKING --- */
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.btn-back {
+    display: inline-block;
+    text-decoration: none;
+    color: #003366;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+.filter-section {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+}
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.filter-group select, .search-input-group input {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    width: 250px;
+}
+.summary-text { margin-bottom: 15px; color: #475569; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    font-size: 14px;
+}
+th { background-color: #003366; color: white; font-weight: 600; }
+.tag-kat { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.badge { padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; display: inline-block; }
+.success { background-color: #d1fae5; color: #065f46; }
+.warning { background-color: #fef3c7; color: #92400e; }
+.danger { background-color: #fee2e2; color: #991b1b; }
+.info { background-color: #e0f2fe; color: #0369a1; }
+.btn-sm {
+    padding: 6px 12px;
+    background: #003366;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.btn-sm:hover { background: #002244; }
+.alert-info { background: #e0f2fe; border-left: 4px solid #0288d1; padding: 12px; margin-top: 15px; border-radius: 4px; font-size: 14px; }
+.alert-danger { background: #fef2f2; border: 1px solid #fca5a5; padding: 20px; text-align: center; color: #991b1b; border-radius: 8px; margin-top: 15px; }
+.tracking-card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-top: 15px; background: #fafafa; }
+.tracking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.tracking-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; font-size: 14px; }
+.timeline { list-style: none; padding-left: 10px; margin-top: 15px; }
+.timeline li { position: relative; padding-left: 20px; margin-bottom: 10px; font-size: 13px; }
+.timeline li::before { content: "•"; color: #0288d1; position: absolute; left: 0; font-size: 18px; top: -3px; }
+.time { font-family: monospace; color: #64748b; }
