@@ -15,10 +15,15 @@
 
         <div class="filter-section" style="background: #eff6ff; border-left: 4px solid #ffcc00; flex-direction: column; gap: 15px; margin-top: 20px;">
             <strong style="color: #003366; font-size: 16px;">➕ Daftarkan Dokumen Order (DO) Baru</strong>
+            
+            <div v-show="showAlert" style="background: #fee2e2; border-left: 4px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 4px; font-size: 14px; width: 100%; font-weight: 500;">
+                {{ alertMessage }}
+            </div>
+
             <form @submit.prevent="tambahDoBaru" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 100%;">
                 <div class="filter-group">
-                    <label>Nomor DO:</label>
-                    <input type="text" v-model="formDO.noDO" placeholder="Contoh: DO2025-0002" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    <label>Nomor DO / Resi:</label>
+                    <input type="text" v-model="formDO.noDO" placeholder="Format wajib: DOxxxxx" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
                 </div>
                 <div class="filter-group">
                     <label>NIM Mahasiswa:</label>
@@ -51,7 +56,6 @@
             <div class="search-input-group">
                 <input type="text" v-model="inputNoDO" placeholder="Contoh: DO2025-0001" style="padding: 10px; width: 100%; max-width: 300px; border: 1px solid #cbd5e1; border-radius: 6px;">
             </div>
-            <small style="color: #64748b; display: block; margin-top: 5px;">TIP: GUNAKAN NOMOR DO YANG SUDAH TERDAFTAR DI ATAS UNTUK MENGUJI.</small>
         </div>
 
         <h3>Detail Status Distribusi</h3>
@@ -80,10 +84,6 @@
         <div v-else class="alert-danger">
             <span v-if="!inputNoDO">Silakan ketik nomor DO terlebih dahulu pada kolom pencarian di atas.</span>
             <span v-else>Nomor DO "<strong>{{ inputNoDO }}</strong>" tidak terdaftar dalam sistem SITTA UT.</span>
-        </div>
-
-        <div v-show="showAlert" class="alert-info" style="border-left-color: #ffcc00;">
-            {{ alertMessage }}
         </div>
     </div>
 
