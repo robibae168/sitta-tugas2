@@ -1,6 +1,6 @@
 /**
  * Tugas Praktik 2 - Aplikasi SITTA UT (Tracking Logistik DO)
- * Perbaikan: Optimasi Pencarian Case-Insensitive & Anti-Spasi
+ * Perbaikan: Validasi Ketat Format Nomor Resi / DO Menggunakan Regex
  */
 
 var trackingApp = new Vue({
@@ -41,12 +41,9 @@ var trackingApp = new Vue({
   },
   computed: {
       detailDO() {
-          // Bersihkan input pencarian dari spasi di depan/belakang dan ubah ke kapital
           const searchKey = this.inputNoDO.trim().toUpperCase();
-          
           if (!searchKey) return null;
 
-          // Cari kecocokan key di dalam objek tracking secara aman
           for (let key in this.tracking) {
               if (key.trim().toUpperCase() === searchKey) {
                   return this.tracking[key];
@@ -56,29 +53,37 @@ var trackingApp = new Vue({
       }
   },
   methods: {
-      // FUNGSI AKSI MEMPROSES INPUT FORM DO BARU
+      // FUNGSI AKSI MEMPROSES INPUT FORM DO BARU DENGAN VALIDASI STRUKTUR RESI
       tambahDoBaru() {
-          // Bersihkan input Nomor DO dari spasi yang tidak disengaja
+          // 1. Bersihkan input dan ubah ke huruf kapital
           const keyBaru = this.formDO.noDO.trim().toUpperCase();
 
+          // 2. ATURAN VALIDASI REGEX: Wajib diawali kata 'DO' baru diikuti angka/huruf/tanda minus
+          // Contoh valid: DO2025-0001, DO123, DO-XYZ
+          const regexFormatDO = /^DO[A-Z0-9\-]+$/;
+
           if (!keyBaru) {
-              alert("Nomor DO tidak boleh kosong!");
+              this.tampilkanAlert("⚠️ Error: Nomor DO/Resi tidak boleh kosong!");
               return;
           }
 
-          // Validasi apakah nomor DO sudah terdaftar sebelumnya
+          // 3. Jalankan pengecekan format resi
+          if (!regexFormatDO.test(keyBaru)) {
+              this.tampilkanAlert("❌ Format Salah! Silakan inputkan nomor resi yang benar (Contoh: DO2025-0002). Harus diawali dengan kode 'DO'.");
+              return; // Menghentikan fungsi agar data tidak tersimpan
+          }
+
+          // 4. Validasi apakah nomor DO sudah terdaftar sebelumnya
           if (this.tracking[keyBaru]) {
-              this.alertMessage = "⚠️ Gagal: Nomor DO " + keyBaru + " sudah terdaftar di sistem SITTA UT!";
-              this.showAlert = true;
-              setTimeout(() => { this.showAlert = false; }, 3000);
+              this.tampilkanAlert("⚠️ Gagal: Nomor DO " + keyBaru + " sudah terdaftar di sistem!");
               return;
           }
 
-          // Dapatkan tanggal hari ini secara dinamis
+          // Dapatkan waktu dinamis saat ini
           const hariIni = new Date().toISOString().split('T')[0];
           const jamIni = new Date().toTimeString().split(' ')[0];
 
-          // Gunakan Vue.set ($set) agar objek baru yang masuk benar-benar reaktif dan langsung dikenali oleh Computed
+          // 5. Simpan data secara reaktif jika semua validasi lolos
           this.$set(this.tracking, keyBaru, {
               nim: this.formDO.nim,
               nama: this.formDO.nama,
@@ -92,12 +97,8 @@ var trackingApp = new Vue({
               ]
           });
 
-          // Munculkan pesan sukses
-          this.alertMessage = "🎉 Sukses: Nomor DO " + keyBaru + " atas nama " + this.formDO.nama + " berhasil didaftarkan!";
-          this.showAlert = true;
-          setTimeout(() => { this.showAlert = false; }, 3500);
-
-          // Otomatis masukkan nomor DO yang baru dibuat ke kolom pencarian agar user langsung melihat hasilnya
+          // Pemicu sukses & pasang ke kolom pencarian otomatis
+          this.tampilkanAlert("🎉 Sukses: Nomor DO " + keyBaru + " berhasil didaftarkan!");
           this.inputNoDO = keyBaru;
 
           // Reset isi form kembali kosong
@@ -107,6 +108,14 @@ var trackingApp = new Vue({
           this.formDO.ekspedisi = "";
           this.formDO.paket = "";
           this.formDO.total = "";
+      },
+
+      // Helper method untuk mempermudah pemanggilan alert pesan info/error
+      tampilkanAlert(pesan) {
+          this.alertMessage = pesan;
+          this.showAlert = true;
+          // Otomatis menutup alert setelah 4 detik agar user sempat membaca instruksi formatnya
+          setTimeout(() => { this.showAlert = false; }, 4000);
       }
   }
 });
